@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>TTRL – Driver Summary</title>
+  <title>SRC – Driver Summary</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root {
@@ -501,7 +501,7 @@ function renderDriverSummary(name) {
 }
 
 function loadJsonFromStored(initialDriverName) {
-  const storedJson = localStorage.getItem('ttrl_selected_json');
+  const storedJson = localStorage.getItem('SRC_selected_json');
   if (!storedJson) return;
 
   fetch('export_data/' + storedJson)
@@ -562,7 +562,7 @@ document.getElementById('backBtn').addEventListener('click', () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   const cameFromIndex = getQueryParam('from') === 'index';
-  const storedDriver = localStorage.getItem('ttrl_selected_driver');
+  const storedDriver = localStorage.getItem('SRC_selected_driver');
 
   if (cameFromIndex && storedDriver) {
     loadJsonFromStored(storedDriver);
