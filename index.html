@@ -429,9 +429,9 @@
 <header>
   <div class="header-top">
     <div class="logo-wrap">
-      <img src="ttrl-logo.png" alt="TTRL logo" class="logo-img">
+      <img src="SRC-logo.png" alt="SRC logo" class="logo-img">
       <div class="header-left-text">
-        <h1 id="leagueTitle">TTRL Multi-Season Statistics</h1>
+        <h1 id="leagueTitle">SRC Multi-Season Statistics</h1>
         <p id="raceDayLine">Choose race date to view:</p>
         <div>
           <select id="fileSelect">
@@ -443,7 +443,7 @@
 
     <div class="header-centre">
       <div class="header-title-row">
-        <span class="header-title-red">TTRL</span>
+        <span class="header-title-red">SRC</span>
         <span class="header-title-blue">MULTI‑SEASON</span>
         <span class="header-title-yellow">INSIGHTS</span>
       </div>
@@ -553,7 +553,7 @@
         <div class="driver-card-header">
           <img id="driverAvatar" src="Drivers Avatars/default.png" alt="Driver avatar" class="driver-card-logo">
           <div>
-            <div class="driver-handle">TTRL DRIVER PROFILE</div>
+            <div class="driver-handle">SRC DRIVER PROFILE</div>
             <h3 id="dcName"></h3>
           </div>
         </div>
@@ -713,7 +713,7 @@ function buildPage(data) {
 
   formatLoadedMeta(meta);
 
-  const leagueName = (meta.leagueName || '').trim() || 'TTRL';
+  const leagueName = (meta.leagueName || '').trim() || 'SRC';
   const msName = info.name || 'All Seasons';
   document.getElementById('leagueTitle').textContent = leagueName + ' – ' + msName;
 
@@ -1186,8 +1186,8 @@ function openDriverSummaryView() {
     return;
   }
 
-  localStorage.setItem('ttrl_selected_json', jsonFilename);
-  localStorage.setItem('ttrl_selected_driver', driverName);
+  localStorage.setItem('SRC_selected_json', jsonFilename);
+  localStorage.setItem('SRC_selected_driver', driverName);
 
   window.location.href = 'driver-summary.html?from=index';
 }
