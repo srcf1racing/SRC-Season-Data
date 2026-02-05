@@ -2,7 +2,7 @@
   "metadata": {
     "formatVersion": 1,
     "exportType": "MultiSeason",
-    "exportedAt": "2026-02-05T12:28:29Z",
+    "exportedAt": "2026-02-05T12:48:50Z",
     "sourceApplication": "Racing League Tools",
     "leagueName": "TTRL "
   },
@@ -18,7 +18,7 @@
     },
     "seasons": [
       {
-        "name": "SRC F2 X SERIES (S3)",
+        "name": "SRC F2 24 X SERIES (S3)",
         "championshipName": "F2 2024 SRC Sprint and Feature",
         "totalRounds": 12,
         "completedRounds": 12,
@@ -150,7 +150,7 @@
               "podiums": 3
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 2,
               "points": "271",
               "racesCount": 11,
@@ -254,7 +254,7 @@
               "podiums": 5
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 11,
               "points": "109",
               "racesCount": 9,
@@ -362,7 +362,7 @@
               "podiums": 3
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 8,
               "points": "122",
               "racesCount": 11,
@@ -562,7 +562,7 @@
               "podiums": 6
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 3,
               "points": "252",
               "racesCount": 11,
@@ -666,7 +666,7 @@
               "podiums": 2
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 1,
               "points": "279",
               "racesCount": 12,
@@ -773,7 +773,7 @@
               "podiums": 2
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 0,
               "points": "0",
               "racesCount": 1,
@@ -960,7 +960,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 12,
               "points": "100",
               "racesCount": 8,
@@ -1067,7 +1067,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 7,
               "points": "132",
               "racesCount": 11,
@@ -1174,7 +1174,7 @@
               "podiums": 3
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 10,
               "points": "109",
               "racesCount": 7,
@@ -1281,7 +1281,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 5,
               "points": "212",
               "racesCount": 11,
@@ -1376,7 +1376,7 @@
               "podiums": 1
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 19,
               "points": "37",
               "racesCount": 3,
@@ -1559,7 +1559,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 4,
               "points": "215",
               "racesCount": 12,
@@ -1655,7 +1655,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 9,
               "points": "116",
               "racesCount": 5,
@@ -1750,7 +1750,7 @@
               "podiums": 3
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 15,
               "points": "87",
               "racesCount": 4,
@@ -1929,7 +1929,7 @@
               "podiums": 1
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 6,
               "points": "170",
               "racesCount": 8,
@@ -2295,7 +2295,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 31,
               "points": "6",
               "racesCount": 1,
@@ -2399,7 +2399,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 20,
               "points": "36",
               "racesCount": 12,
@@ -2486,7 +2486,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 13,
               "points": "100",
               "racesCount": 11,
@@ -2576,7 +2576,7 @@
               "podiums": 1
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 16,
               "points": "65",
               "racesCount": 5,
@@ -2748,7 +2748,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 14,
               "points": "91",
               "racesCount": 12,
@@ -2934,7 +2934,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 24,
               "points": "19",
               "racesCount": 11,
@@ -3204,7 +3204,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 27,
               "points": "15",
               "racesCount": 4,
@@ -3284,7 +3284,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 17,
               "points": "64",
               "racesCount": 7,
@@ -3380,7 +3380,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 22,
               "points": "27",
               "racesCount": 4,
@@ -3470,7 +3470,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 18,
               "points": "46",
               "racesCount": 8,
@@ -3562,7 +3562,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 26,
               "points": "16",
               "racesCount": 8,
@@ -3981,7 +3981,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 23,
               "points": "24",
               "racesCount": 2,
@@ -4232,7 +4232,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 21,
               "points": "27",
               "racesCount": 1,
@@ -4628,7 +4628,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 25,
               "points": "16",
               "racesCount": 3,
@@ -4707,7 +4707,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 28,
               "points": "14",
               "racesCount": 2,
@@ -4795,7 +4795,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 32,
               "points": "4",
               "racesCount": 2,
@@ -4887,7 +4887,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 29,
               "points": "13",
               "racesCount": 1,
@@ -4982,7 +4982,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 36,
               "points": "0",
               "racesCount": 1,
@@ -5079,7 +5079,7 @@
               "podiums": 0
             },
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 30,
               "points": "6",
               "racesCount": 1,
@@ -5641,7 +5641,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 33,
               "points": "3",
               "racesCount": 1,
@@ -5808,7 +5808,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 34,
               "points": "2",
               "racesCount": 1,
@@ -5970,7 +5970,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 35,
               "points": "1",
               "racesCount": 1,
@@ -6431,7 +6431,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 0,
               "points": "0",
               "racesCount": 1,
@@ -6590,7 +6590,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 0,
               "points": "0",
               "racesCount": 1,
@@ -6746,7 +6746,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 0,
               "points": "0",
               "racesCount": 1,
@@ -7059,7 +7059,7 @@
           "top5Finishes": 0,
           "seasonResults": [
             {
-              "seasonName": "SRC F2 X SERIES (S3)",
+              "seasonName": "SRC F2 24 X SERIES (S3)",
               "position": 0,
               "points": "0",
               "racesCount": 0,
@@ -7929,7 +7929,7 @@
             "timeMs": 102429,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         },
@@ -7939,7 +7939,7 @@
             "timeMs": 103531,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Race"
           },
           "mostWinsDriver": {
@@ -7969,7 +7969,7 @@
             "timeMs": 102429,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         }
@@ -8216,7 +8216,7 @@
             "timeMs": 77694,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         },
@@ -8226,7 +8226,7 @@
             "timeMs": 78405,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Race"
           },
           "mostWinsDriver": {
@@ -8256,7 +8256,7 @@
             "timeMs": 77694,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         }
@@ -8402,7 +8402,7 @@
             "timeMs": 87328,
             "driverName": "F1AlexTTV",
             "teamName": "Hitech",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Race"
           }
         },
@@ -8412,7 +8412,7 @@
             "timeMs": 87328,
             "driverName": "F1AlexTTV",
             "teamName": "Hitech",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Race"
           },
           "mostWinsDriver": {
@@ -8680,7 +8680,7 @@
             "timeMs": 116274,
             "driverName": "Edsterz",
             "teamName": "AIX",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         }
@@ -8740,7 +8740,7 @@
             "timeMs": 85037,
             "driverName": "Xd_obi_weymouth",
             "teamName": "Campos",
-            "seasonName": "SRC F2 X SERIES (S3)",
+            "seasonName": "SRC F2 24 X SERIES (S3)",
             "sessionType": "Qualification"
           }
         }
