@@ -973,7 +973,7 @@ function buildPage(data) {
     seasonsResults.forEach(sr => {
       const tr = document.createElement('tr');
       tr.innerHTML =
-              const meta = seasonMetaByName[sr.seasonName] || {};
+              const meta = window.seasonMetaByName[sr.seasonName] || {};
         '<td>' + (sr.seasonName || '') + '</td>' +
         '<td>' + (sr.position || '') + '</td>' +
         '<td>' + (sr.points || 0) + '</td>' +
