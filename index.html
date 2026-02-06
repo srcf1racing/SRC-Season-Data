@@ -664,6 +664,31 @@
 <script>
 let globalBaseData = null;
 const DRIVER_AVATAR_FOLDER = 'Drivers Avatars';
+  
+// state for driver-summary.html
+window.currentExportFilename = '';
+window.currentDriverName = '';
+
+const EXPORT_FILES = [
+  { value: 'export_data/src_f1.json', label: 'SRC F1' },
+  { value: 'export_data/src_f2.json', label: 'SRC F2' }
+];
+
+function getDriverAvatarSrc(driverName) {
+  return DRIVER_AVATAR_FOLDER + '/' + driverName + '.png';
+}
+
+function populateFileSelect() {
+  const select = document.getElementById('fileSelect');
+  if (!select) return;
+  while (select.options.length > 1) select.remove(1);
+  EXPORT_FILES.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.value;
+    opt.textContent = f.label;
+    select.appendChild(opt);
+  });
+}
 
 // state for driver-summary.html
 window.currentExportFilename = '';
