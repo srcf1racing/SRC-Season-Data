@@ -973,16 +973,16 @@ function buildPage(data) {
     seasonsResults.forEach(sr => {
       const tr = document.createElement('tr');
       tr.innerHTML =
+              const meta = seasonMetaByName[sr.seasonName] || {};
         '<td>' + (sr.seasonName || '') + '</td>' +
-        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).startDate + '</td>' +
-        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).endDate + '</td>' +
-        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).status + '</td>' +
         '<td>' + (sr.position || '') + '</td>' +
         '<td>' + (sr.points || 0) + '</td>' +
         '<td>' + (sr.racesCount || 0) + '</td>' +
         '<td>' + (sr.wins || 0) + '</td>' +
-        '<td>' + (sr.podiums || 0) + '</td>';
-      dcSeasonsTable.appendChild(tr);
+        '<td>' + (meta.startDate || '') + '</td>' +
+        '<td>' + (meta.endDate || '') + '</td>' +
+        '<td>' + (meta.status || '') + '</td>' +
+        '<td>' + (sr.podiums || 0) + '</td>';      dcSeasonsTable.appendChild(tr);
     });
 
     if (driverModal) driverModal.classList.add('open');
