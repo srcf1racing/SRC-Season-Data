@@ -451,11 +451,8 @@ function renderDriverSummary(name) {
         points.bestSeasonPoints + ' (' + (points.bestSeasonName || '') + ')' : '' }
   ]);
 
-  const seasonsEl = document.getElementById('listSeasons');
-  seasonsEl.innerHTML = '';
-  seasons.slice().sort((a,b) =>
-    String(a.seasonName || '').localeCompare(String(b.seasonName || ''))
-  ).forEach(s => {
+  seasons.slice().sort((a,b) => String(a.seasonName || '').localeCompare(String(b.seasonName || '')) )
+  .forEach(s => {
     const rowDiv = document.createElement('div');
     rowDiv.className = 'season-row';
 
@@ -470,10 +467,11 @@ function renderDriverSummary(name) {
     const metaLine = document.createElement('div');
     metaLine.className = 'season-meta-line';
 
-    const eventsVal =
-      s.racesCount != null ? s.racesCount : 0;
-
+    const eventsVal = s.racesCount != null ? s.racesCount : 0;
     const lineParts = [];
+
+    const seasonMeta = ((window.seasonMetaByName || {})[s.seasonName] || {});  // <-- moved up
+
     lineParts.push(eventsVal + ' events');
     lineParts.push((s.points || 0) + ' pts');
     if (seasonMeta.startDate || seasonMeta.endDate) {
@@ -482,29 +480,12 @@ function renderDriverSummary(name) {
     if (seasonMeta.status) {
       lineParts.push(seasonMeta.status);
     }
+
     metaLine.innerHTML = lineParts.map(x => '<span>' + x + '</span>').join('');
     left.appendChild(metaLine);
-    const seasonMeta = ((window.seasonMetaByName || {})[s.seasonName] || {});
-
-    rowDiv.appendChild(left);
-
-    const right = document.createElement('div');
-    right.className = 'season-right';
-
-    const posTag = document.createElement('div');
-    posTag.className = 'tag-pill tag-pos';
-    posTag.textContent = 'P' + (s.position || '–');
-    right.appendChild(posTag);
-
-    if (s.wins != null) {
-      const winText = document.createElement('div');
-      winText.textContent = s.wins + ' wins';
-      right.appendChild(winText);
-    }
-
-    rowDiv.appendChild(right);
-    seasonsEl.appendChild(rowDiv);
+    ...
   });
+
 }
 
 function loadJsonFromStored(initialDriverName) {
