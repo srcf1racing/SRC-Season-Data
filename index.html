@@ -668,11 +668,11 @@ window.currentDriverName = '';
 
 const EXPORT_FILES = [
   { value: 'export_data/src_f1.json', label: 'SRC F1' },
-    { value: 'export_data/src_f2.json', label: 'SRC F2' }
+  { value: 'export_data/src_f2.json', label: 'SRC F2' }
 ];
 
 function getDriverAvatarSrc(driverName) {
-  return DRIVER_AVATAR_FOLDER + '/' + driverName + '.png';
+  return DRIVER_AVATAR_FOLDER + '/' + driverName + '.gif';
 }
 
 function populateFileSelect() {
@@ -909,12 +909,14 @@ function buildPage(data) {
 
     if (driverAvatar) {
       const avatarSrc = getDriverAvatarSrc(row.name);
-      driverAvatar.onerror = function () {
-        this.onerror = null;
-        this.src = DRIVER_AVATAR_FOLDER + '/default.png';
+      driverAvatar.onerror = () => {
+        if (driverAvatar.src.includes('.gif')) {
+          driverAvatar.src = driverAvatar.src.replace('.gif', '.png');
+        } else {
+          driverAvatar.src = DRIVER_AVATAR_FOLDER + '/default.png';
+        }
       };
       driverAvatar.src = avatarSrc;
-      driverAvatar.alt = row.name;
     }
 
     dcCats.innerHTML = '';
