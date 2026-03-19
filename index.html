@@ -173,6 +173,10 @@
       box-shadow:0 0 18px rgba(59,130,246,0.45);
       overflow:hidden;
     }
+    .cleanest-card {
+  border-top:3px solid #22c55e;
+  margin-bottom:8px;
+}
     .driver-card.primary-champ { border-left-color:#22c55e; }
     .driver-card::before {
       content:'';
@@ -429,7 +433,7 @@
 <header>
   <div class="header-top">
     <div class="logo-wrap">
-      <img src="ttrl-logo.png" alt="SRC logo" class="logo-img">
+      <img src="SRC-logo.png" alt="SRC logo" class="logo-img">
       <div class="header-left-text">
         <h1 id="leagueTitle">SRC Multi-Season Statistics</h1>
         <p id="raceDayLine">Choose race day to view:</p>
@@ -471,7 +475,7 @@
     </div>
   </section>
 
-  <!-- Drivers -->
+   <!-- Drivers -->
   <section id="driversSection" data-view="drivers" class="active">
     <h2>Drivers</h2>
     <p class="section-description">
@@ -541,7 +545,25 @@
           </div>
         </div>
       </div>
+
+   <div class="driver-layout-side">
+  <div id="cleanestDriverBox" class="driver-card cleanest-card">
+    <div class="driver-card-header">
+      <img id="cleanestDriverAvatar"
+           src="Drivers Avatars/default.png"
+           alt="Driver avatar"
+           class="driver-card-logo">
+      <div>
+        <div class="driver-handle">CLEANEST DRIVER</div>
+        <h3 id="cleanestDriverName">Not enough race data yet</h3>
+      </div>
     </div>
+    <div class="driver-meta" id="cleanestDriverMeta">
+      This stat appears once at least 10 races have been completed.
+    </div>
+  </div>
+</div>
+
   </section>
 
   <!-- Driver modal -->
@@ -557,6 +579,7 @@
             <h3 id="dcName"></h3>
           </div>
         </div>
+
         <div class="driver-meta" id="dcMeta"></div>
         <div id="dcCats" style="margin-bottom:6px;"></div>
         <div class="driver-statline" id="dcSummary"></div>
@@ -573,6 +596,9 @@
             <thead>
               <tr>
                 <th>Season</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
                 <th>Pos</th>
                 <th>Pts</th>
                 <th>Races</th>
@@ -649,7 +675,7 @@
     </div>
   </section>
 
-  <!-- Driver Times placeholder -->
+    <!-- Driver Times placeholder -->
   <section id="driverTimesSection" data-view="driverTimes">
     <h2>Driver Times</h2>
     <p class="muted">
@@ -666,27 +692,53 @@ const DRIVER_AVATAR_FOLDER = 'Drivers Avatars';
 window.currentExportFilename = '';
 window.currentDriverName = '';
 
-const EXPORT_FILES = [
-  { value: 'export_data/src_f1.json', label: 'SRC F1' },
-  { value: 'export_data/src_f2.json', label: 'SRC F2' }
-];
-
+// avatar helper
 function getDriverAvatarSrc(driverName) {
   return DRIVER_AVATAR_FOLDER + '/' + driverName + '.gif';
 }
 
-function populateFileSelect() {
+// ---- DROPDOWN: GitHub API ----
+async function populateFileSelect() {
   const select = document.getElementById('fileSelect');
   if (!select) return;
+
+  // keep the first "Select race day…" option
   while (select.options.length > 1) select.remove(1);
-  EXPORT_FILES.forEach(f => {
-    const opt = document.createElement('option');
-    opt.value = f.value;
-    opt.textContent = f.label;
-    select.appendChild(opt);
-  });
+
+  try {
+    const apiUrl =
+      'https://api.github.com/repos/SRCf1racing/SRC-season-data/contents/export_data';
+
+    const res = await fetch(apiUrl);
+    if (!res.ok) throw new Error('GitHub API error: ' + res.status);
+
+    const items = await res.json();   // array from GitHub
+
+    const jsonFiles = items.filter(
+      item =>
+        item.type === 'file' &&
+        item.name.toLowerCase().endsWith('.json')
+    );
+
+jsonFiles.forEach(file => {
+  const opt = document.createElement('option');
+  opt.value = file.path;      // keep full path for loading
+
+  // strip .json from the visible text
+  const baseName = file.name.endsWith('.json')
+    ? file.name.slice(0, -5)
+    : file.name;
+  opt.textContent = baseName;
+
+  select.appendChild(opt);
+});
+
+  } catch (err) {
+    console.error('populateFileSelect error', err);
+  }
 }
 
+// ---- EXISTING META + PAGE BUILD ----
 function formatLoadedMeta(meta) {
   const fileMetaEl = document.getElementById('fileMeta');
   if (!fileMetaEl) return;
@@ -711,11 +763,24 @@ function buildPage(data) {
   const driversSrc = multi.drivers || multi.driverStatistics || data.drivers || [];
   const tracksSrc = multi.tracks || multi.trackStatistics || data.tracks || [];
 
+  // Create season metadata lookup
+  const seasonMetaByName = {};
+  (multi.seasons || []).forEach(s => {
+    seasonMetaByName[s.name] = {
+      startDate: s.startDate || '',
+      endDate: s.endDate || '',
+      status: s.isCompleted ? 'Completed'
+        : (s.isStarted ? 'In Progress' : 'Not Started')
+    };
+  });
+  window.seasonMetaByName = seasonMetaByName;
+
   formatLoadedMeta(meta);
 
   const leagueName = (meta.leagueName || '').trim() || 'SRC';
   const msName = info.name || 'All Seasons';
-  document.getElementById('leagueTitle').textContent = leagueName + ' – ' + msName;
+  document.getElementById('leagueTitle').textContent =
+    leagueName + ' – ' + msName;
 
   const cardsEl = document.getElementById('overviewCards');
   cardsEl.innerHTML = '';
@@ -800,11 +865,356 @@ function buildPage(data) {
 
   const driverRowsAll = driversSrc.map(deriveDriverRow);
 
+  // Merge RichieChappe11 alias
+  (function mergeRichieChappell() {
+    const MAIN_NAME = 'RichieChappe11';
+    const ALIAS_NAME = 'richie chappell (dnu)';
+
+    const mainLower = MAIN_NAME.toLowerCase();
+    const aliasLower = ALIAS_NAME.toLowerCase();
+
+    let mainRow = driverRowsAll.find(
+      d => (d.name || '').toLowerCase() === mainLower
+    );
+
+    if (!mainRow) {
+      mainRow = {
+        source: {},
+        name: MAIN_NAME,
+        nationality: '',
+        seasons: 0,
+        races: 0,
+        totalPoints: 0,
+        avgPerMajor: 0,
+        wins: 0,
+        podiums: 0,
+        fastRaceLaps: 0,
+        fastPoleLaps: 0,
+        bestChampPos: '',
+        cleanPct: '',
+        reliabPct: ''
+      };
+      driverRowsAll.push(mainRow);
+    }
+
+    const aliasRows = driverRowsAll.filter(
+      d => (d.name || '').toLowerCase() === aliasLower
+    );
+    if (!aliasRows.length) return;
+
+    aliasRows.forEach(ar => {
+      mainRow.seasons += Number(ar.seasons || 0);
+      mainRow.races += Number(ar.races || 0);
+      mainRow.totalPoints += Number(ar.totalPoints || 0);
+      mainRow.wins += Number(ar.wins || 0);
+      mainRow.podiums += Number(ar.podiums || 0);
+      mainRow.fastRaceLaps += Number(ar.fastRaceLaps || 0);
+      mainRow.fastPoleLaps += Number(ar.fastPoleLaps || 0);
+      if (ar.bestChampPos) {
+        if (!mainRow.bestChampPos) {
+          mainRow.bestChampPos = ar.bestChampPos;
+        } else {
+          const m = Number(mainRow.bestChampPos);
+          const a = Number(ar.bestChampPos);
+          if (!Number.isNaN(a) && (Number.isNaN(m) || a < m)) {
+            mainRow.bestChampPos = ar.bestChampPos;
+          }
+        }
+      }
+    });
+
+    if (mainRow.races > 0) {
+      mainRow.avgPerMajor = mainRow.totalPoints / mainRow.races;
+    }
+
+    for (let i = driverRowsAll.length - 1; i >= 0; i--) {
+      if ((driverRowsAll[i].name || '').toLowerCase() === aliasLower) {
+        driverRowsAll.splice(i, 1);
+      }
+    }
+  })();
+
+  function findCleanestDriver() {
+    if (!driverRowsAll.length) return null;
+
+    const maxRaces = driverRowsAll.reduce(
+      (max, d) => Math.max(max, Number(d.races || 0)),
+      0
+    );
+
+    let candidates = driverRowsAll;
+
+    if (maxRaces >= 10) {
+      const minRaces = maxRaces * 0.8;
+      candidates = driverRowsAll.filter(d => Number(d.races || 0) >= minRaces);
+    }
+
+    candidates = candidates.filter(d => d.cleanPct !== '' && d.cleanPct != null);
+    if (!candidates.length) return null;
+
+    return candidates.reduce((best, d) => {
+      const v = Number(d.cleanPct);
+      const b = Number(best.cleanPct);
+      if (Number.isNaN(v)) return best;
+      if (Number.isNaN(b)) return d;
+      return v > b ? d : best;
+    }, candidates[0]);
+  }
+
+  function renderCleanestDriver() {
+    const box = document.getElementById('cleanestDriverBox');
+    if (!box) return;
+
+    const best = findCleanestDriver();
+    if (!best) {
+      box.textContent = 'Cleanest driver: –';
+      return;
+    }
+
+    const val = best.cleanPct;
+    const txt = (val !== '' && val != null && val.toFixed)
+      ? val.toFixed(1)
+      : val;
+
+    box.textContent = 'Cleanest driver: ' + best.name + ' – ' + txt + '%';
+  }
+
   let selectedDriverName = null;
   let driverCurrentPage = 1;
   let driverPageSize = 25;
 
   function getFilteredDriverRows() { return driverRowsAll; }
+
+    function getFilteredDriverRows() { return driverRowsAll; }
+
+function countryToFlagHTML(nationality) {
+  if (!nationality) return '';
+
+  const n = nationality.trim();
+
+  // Home nations – use your PNGs in /Flags
+  if (n === 'England') {
+    return '<img src="Flags/england-flag-icon.png" alt="England" style="height:14px;vertical-align:middle;">';
+  }
+  if (n === 'Scotland') {
+    return '<img src="Flags/scotland-flag-icon.png" alt="Scotland" style="height:14px;vertical-align:middle;">';
+  }
+  if (n === 'Wales') {
+    return '<img src="Flags/wales-flag-icon.png" alt="Wales" style="height:14px;vertical-align:middle;">';
+  }
+  if (n === 'United Nations') {
+    return '<img src="Flags/united_nations.png" alt="United Nations" style="height:14px;vertical-align:middle;">';
+  }
+  if (n === 'Northern Ireland') {
+    return '<img src="Flags/northern_ireland.png" alt="Northern Ireland" style="height:14px;vertical-align:middle;">';
+  }
+
+  // Full-name → ISO alpha‑2
+  const map = {
+    'Afghanistan': 'AF',
+    'Albania': 'AL',
+    'Algeria': 'DZ',
+    'Andorra': 'AD',
+    'Angola': 'AO',
+    'Antigua and Barbuda': 'AG',
+    'Argentina': 'AR',
+    'Armenia': 'AM',
+    'Australia': 'AU',
+    'Austria': 'AT',
+    'Azerbaijan': 'AZ',
+    'Bahamas': 'BS',
+    'Bahrain': 'BH',
+    'Bangladesh': 'BD',
+    'Barbados': 'BB',
+    'Belarus': 'BY',
+    'Belgium': 'BE',
+    'Belize': 'BZ',
+    'Benin': 'BJ',
+    'Bhutan': 'BT',
+    'Bolivia': 'BO',
+    'Bosnia and Herzegovina': 'BA',
+    'Botswana': 'BW',
+    'Brazil': 'BR',
+    'Brunei': 'BN',
+    'Bulgaria': 'BG',
+    'Burkina Faso': 'BF',
+    'Burundi': 'BI',
+    'Cabo Verde': 'CV',
+    'Cambodia': 'KH',
+    'Cameroon': 'CM',
+    'Canada': 'CA',
+    'Central African Republic': 'CF',
+    'Chad': 'TD',
+    'Chile': 'CL',
+    'China': 'CN',
+    'Colombia': 'CO',
+    'Comoros': 'KM',
+    'Congo': 'CG',
+    'Congo, Democratic Republic of the': 'CD',
+    'Costa Rica': 'CR',
+    'Croatia': 'HR',
+    'Cuba': 'CU',
+    'Cyprus': 'CY',
+    'Czech Republic': 'CZ',
+    'Côte d\'Ivoire': 'CI',
+    'Denmark': 'DK',
+    'Djibouti': 'DJ',
+    'Dominica': 'DM',
+    'Dominican Republic': 'DO',
+    'Ecuador': 'EC',
+    'Egypt': 'EG',
+    'El Salvador': 'SV',
+    'Equatorial Guinea': 'GQ',
+    'Eritrea': 'ER',
+    'Estonia': 'EE',
+    'Eswatini': 'SZ',
+    'Ethiopia': 'ET',
+    'Fiji': 'FJ',
+    'Finland': 'FI',
+    'France': 'FR',
+    'Gabon': 'GA',
+    'Gambia': 'GM',
+    'Georgia': 'GE',
+    'Germany': 'DE',
+    'Ghana': 'GH',
+    'Greece': 'GR',
+    'Grenada': 'GD',
+    'Guatemala': 'GT',
+    'Guinea': 'GN',
+    'Guinea-Bissau': 'GW',
+    'Guyana': 'GY',
+    'Haiti': 'HT',
+    'Honduras': 'HN',
+    'Hungary': 'HU',
+    'Iceland': 'IS',
+    'India': 'IN',
+    'Indonesia': 'ID',
+    'Iran': 'IR',
+    'Iraq': 'IQ',
+    'Ireland': 'IE',
+    'Israel': 'IL',
+    'Italy': 'IT',
+    'Jamaica': 'JM',
+    'Japan': 'JP',
+    'Jordan': 'JO',
+    'Kazakhstan': 'KZ',
+    'Kenya': 'KE',
+    'Kiribati': 'KI',
+    'Kuwait': 'KW',
+    'Kyrgyzstan': 'KG',
+    'Laos': 'LA',
+    'Latvia': 'LV',
+    'Lebanon': 'LB',
+    'Lesotho': 'LS',
+    'Liberia': 'LR',
+    'Libya': 'LY',
+    'Liechtenstein': 'LI',
+    'Lithuania': 'LT',
+    'Luxembourg': 'LU',
+    'Madagascar': 'MG',
+    'Malawi': 'MW',
+    'Malaysia': 'MY',
+    'Maldives': 'MV',
+    'Mali': 'ML',
+    'Malta': 'MT',
+    'Marshall Islands': 'MH',
+    'Mauritania': 'MR',
+    'Mauritius': 'MU',
+    'Mexico': 'MX',
+    'Micronesia': 'FM',
+    'Moldova': 'MD',
+    'Monaco': 'MC',
+    'Mongolia': 'MN',
+    'Montenegro': 'ME',
+    'Morocco': 'MA',
+    'Mozambique': 'MZ',
+    'Myanmar': 'MM',
+    'Namibia': 'NA',
+    'Nauru': 'NR',
+    'Nepal': 'NP',
+    'Netherlands': 'NL',
+    'New Zealand': 'NZ',
+    'Nicaragua': 'NI',
+    'Niger': 'NE',
+    'Nigeria': 'NG',
+    'North Korea': 'KP',
+    'North Macedonia': 'MK',
+    'Norway': 'NO',
+    'Oman': 'OM',
+    'Pakistan': 'PK',
+    'Palau': 'PW',
+    'Panama': 'PA',
+    'Papua New Guinea': 'PG',
+    'Paraguay': 'PY',
+    'Peru': 'PE',
+    'Philippines': 'PH',
+    'Poland': 'PL',
+    'Portugal': 'PT',
+    'Qatar': 'QA',
+    'Romania': 'RO',
+    'Russia': 'RU',
+    'Rwanda': 'RW',
+    'Saint Kitts and Nevis': 'KN',
+    'Saint Lucia': 'LC',
+    'Saint Vincent and the Grenadines': 'VC',
+    'Samoa': 'WS',
+    'San Marino': 'SM',
+    'Sao Tome and Principe': 'ST',
+    'Saudi Arabia': 'SA',
+    'Senegal': 'SN',
+    'Serbia': 'RS',
+    'Seychelles': 'SC',
+    'Sierra Leone': 'SL',
+    'Singapore': 'SG',
+    'Slovakia': 'SK',
+    'Slovenia': 'SI',
+    'Solomon Islands': 'SB',
+    'Somalia': 'SO',
+    'South Africa': 'ZA',
+    'South Korea': 'KR',
+    'South Sudan': 'SS',
+    'Spain': 'ES',
+    'Sri Lanka': 'LK',
+    'Sudan': 'SD',
+    'Suriname': 'SR',
+    'Sweden': 'SE',
+    'Switzerland': 'CH',
+    'Syria': 'SY',
+    'Taiwan': 'TW',
+    'Tajikistan': 'TJ',
+    'Tanzania': 'TZ',
+    'Thailand': 'TH',
+    'Timor-Leste': 'TL',
+    'Togo': 'TG',
+    'Tonga': 'TO',
+    'Trinidad and Tobago': 'TT',
+    'Tunisia': 'TN',
+    'Turkey': 'TR',
+    'Turkmenistan': 'TM',
+    'Tuvalu': 'TV',
+    'Uganda': 'UG',
+    'Ukraine': 'UA',
+    'United Arab Emirates': 'AE',
+    'United Kingdom': 'GB',
+    'United States Of America': 'US',
+    'Uruguay': 'UY',
+    'Uzbekistan': 'UZ',
+    'Vanuatu': 'VU',
+    'Venezuela': 'VE',
+    'Vietnam': 'VN',
+    'Yemen': 'YE',
+    'Zambia': 'ZM',
+    'Zimbabwe': 'ZW'
+  };
+
+  const code = map[n];
+  if (!code) return '';
+
+  return code.replace(/./g, c =>
+    String.fromCodePoint(127397 + c.charCodeAt(0))
+  );
+}
+
 
   function renderDrivers() {
     const search = document.getElementById('driverSearch').value.toLowerCase();
@@ -838,16 +1248,17 @@ function buildPage(data) {
     const start = (driverCurrentPage - 1) * driverPageSize;
     const pageRows = filtered.slice(start, start + driverPageSize);
 
-    driversTableBody.innerHTML = '';
+      driversTableBody.innerHTML = '';
     pageRows.forEach(dr => {
       const tr = document.createElement('tr');
       tr.dataset.driverName = dr.name;
       if (dr.name === selectedDriverName) tr.classList.add('driver-row-selected');
-      tr.innerHTML =
-        '<td>' + dr.name + '</td>' +
-        '<td>' + dr.nationality + '</td>' +
-        '<td>' + dr.seasons + '</td>' +
-        '<td>' + dr.races + '</td>' +
+
+  tr.innerHTML =
+  '<td>' + dr.name + '</td>' +
+  '<td>' + countryToFlagHTML(dr.nationality) + '</td>' +  // <- use HTML version
+  '<td>' + dr.seasons + '</td>' +
+  '<td>' + dr.races + '</td>' +
         '<td>' + dr.totalPoints + '</td>' +
         '<td>' +
           (dr.avgPerMajor.toFixed ? dr.avgPerMajor.toFixed(1) : dr.avgPerMajor) +
@@ -865,8 +1276,10 @@ function buildPage(data) {
           (dr.reliabPct !== '' ?
             (dr.reliabPct.toFixed ? dr.reliabPct.toFixed(1) : dr.reliabPct) : '') +
         '</td>';
+
       driversTableBody.appendChild(tr);
     });
+
 
     const infoEl = document.getElementById('driverPageInfo');
     if (infoEl) {
@@ -877,7 +1290,75 @@ function buildPage(data) {
     const nextBtn = document.getElementById('driverNextPage');
     if (prevBtn) prevBtn.disabled = driverCurrentPage <= 1;
     if (nextBtn) nextBtn.disabled = driverCurrentPage >= totalPages;
+
+    // keep box in sync with current data/filters
+    renderCleanestDriverBox();
   }
+
+  function renderCleanestDriverBox() {
+  const box = document.getElementById('cleanestDriverBox');
+  const nameEl = document.getElementById('cleanestDriverName');
+  const metaEl = document.getElementById('cleanestDriverMeta');
+  const avatarEl = document.getElementById('cleanestDriverAvatar');
+  if (!box || !nameEl || !metaEl) return;
+
+  const rows = getFilteredDriverRows();
+
+  // find max races in this export
+  const maxRaces = rows.reduce((max, d) => Math.max(max, d.races || 0), 0);
+
+  // if nobody has 10+ races yet, keep default message
+  if (maxRaces < 10) {
+    nameEl.textContent = 'Not enough race data yet';
+    metaEl.textContent = 'This stat appears once at least 10 races have been completed.';
+    if (avatarEl) avatarEl.src = DRIVER_AVATAR_FOLDER + '/default.png';
+    return;
+  }
+
+  const minRaces = Math.max(10, Math.floor(maxRaces * 0.8));
+
+  const eligible = rows.filter(d =>
+    (d.races || 0) >= minRaces &&
+    d.cleanPct !== '' &&
+    d.cleanPct != null
+  );
+
+  if (!eligible.length) {
+    nameEl.textContent = 'Not enough race data yet';
+    metaEl.textContent =
+      `This stat appears once a driver has at least ${minRaces} races in this export.`;
+    if (avatarEl) avatarEl.src = DRIVER_AVATAR_FOLDER + '/default.png';
+    return;
+  }
+
+  eligible.sort((a, b) => {
+    const byClean = (b.cleanPct || 0) - (a.cleanPct || 0);
+    if (byClean !== 0) return byClean;
+    const byRaces = (b.races || 0) - (a.races || 0);
+    if (byRaces !== 0) return byRaces;
+    return (b.totalPoints || 0) - (a.totalPoints || 0);
+  });
+
+  const best = eligible[0];
+  const pct = best.cleanPct.toFixed ? best.cleanPct.toFixed(1) : best.cleanPct;
+
+  nameEl.textContent = best.name;
+  metaEl.textContent =
+    `Cleanest driver across this export • ${pct}% clean over ${best.races} races (min ${minRaces} races)`;
+
+  if (avatarEl) {
+    const avatarSrc = getDriverAvatarSrc(best.name);
+    avatarEl.onerror = () => {
+      if (avatarEl.src.includes('.gif')) {
+        avatarEl.src = avatarEl.src.replace('.gif', '.png');
+      } else {
+        avatarEl.src = DRIVER_AVATAR_FOLDER + '/default.png';
+      }
+    };
+    avatarEl.src = avatarSrc;
+  }
+}
+
 
   function renderDriverCard(driverName) {
     const rows = getFilteredDriverRows();
@@ -962,6 +1443,9 @@ function buildPage(data) {
       const tr = document.createElement('tr');
       tr.innerHTML =
         '<td>' + (sr.seasonName || '') + '</td>' +
+        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).startDate + '</td>' +
+        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).endDate + '</td>' +
+        '<td>' + ((window.seasonMetaByName || {})[sr.seasonName] || {}).status + '</td>' +
         '<td>' + (sr.position || '') + '</td>' +
         '<td>' + (sr.points || 0) + '</td>' +
         '<td>' + (sr.racesCount || 0) + '</td>' +
@@ -985,11 +1469,21 @@ function buildPage(data) {
     });
   }
 
-  document.getElementById('driverSearch').addEventListener('input', () => { driverCurrentPage = 1; renderDrivers(); });
-  document.getElementById('minSeasons').addEventListener('change', () => { driverCurrentPage = 1; renderDrivers(); });
-  document.getElementById('driverSort').addEventListener('change', () => { driverCurrentPage = 1; renderDrivers(); });
-  document.getElementById('driverPrevPage').addEventListener('click', () => { driverCurrentPage--; renderDrivers(); });
-  document.getElementById('driverNextPage').addEventListener('click', () => { driverCurrentPage++; renderDrivers(); });
+  document.getElementById('driverSearch').addEventListener('input', () => {
+    driverCurrentPage = 1; renderDrivers();
+  });
+  document.getElementById('minSeasons').addEventListener('change', () => {
+    driverCurrentPage = 1; renderDrivers();
+  });
+  document.getElementById('driverSort').addEventListener('change', () => {
+    driverCurrentPage = 1; renderDrivers();
+  });
+  document.getElementById('driverPrevPage').addEventListener('click', () => {
+    driverCurrentPage--; renderDrivers();
+  });
+  document.getElementById('driverNextPage').addEventListener('click', () => {
+    driverCurrentPage++; renderDrivers();
+  });
   document.getElementById('driverPageSize').addEventListener('change', e => {
     driverPageSize = Number(e.target.value || 25);
     driverCurrentPage = 1;
@@ -997,6 +1491,8 @@ function buildPage(data) {
   });
 
   renderDrivers();
+  renderCleanestDriverBox();
+
 
   // ----- TRACKS -----
   const trackSelect = document.getElementById('trackSelect');
@@ -1132,33 +1628,39 @@ function buildPage(data) {
     renderTrackSeasonCmp();
   });
 }
+// top-level view tabs: Drivers / Tracks / Driver Times
+(function setupMainViewTabs() {
+  const tabButtons = Array.from(document.querySelectorAll('#viewSelector .tab-btn'))
+    .filter(btn => !btn.classList.contains('disabled'));
 
-// top-level view switching
-document.querySelectorAll('#viewSelector .tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (btn.classList.contains('disabled')) return;
-    document.querySelectorAll('#viewSelector .tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const view = btn.getAttribute('data-view');
-    document.querySelectorAll('section[data-view]').forEach(sec => {
-      sec.classList.toggle('active', sec.getAttribute('data-view') === view);
+  const sections = Array.from(document.querySelectorAll('section[data-view]'));
+
+  function activateView(viewName) {
+    // buttons
+    tabButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === viewName);
+    });
+    // sections
+    sections.forEach(sec => {
+      sec.classList.toggle('active', sec.dataset.view === viewName);
+    });
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      if (!view) return;
+      activateView(view);
     });
   });
-});
 
-// track subtabs
-document.querySelectorAll('.track-subtab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.track-subtab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const view = btn.getAttribute('data-track-view');
-    document.querySelectorAll('[data-track-view]').forEach(el => {
-      if (el.id === 'trackDetailsView' || el.id === 'trackSeasonCmpView') {
-        el.style.display = el.getAttribute('data-track-view') === view ? '' : 'none';
-      }
-    });
-  });
-});
+  // ensure initial state is consistent with existing markup
+  const initial =
+    (document.querySelector('#viewSelector .tab-btn.active') || {}).dataset?.view
+    || 'drivers';
+  activateView(initial);
+})();
+
 
 // file loading
 populateFileSelect();
@@ -1170,6 +1672,16 @@ document.getElementById('fileSelect').addEventListener('change', async e => {
 
   try {
     const res = await fetch(path);
+
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('text/html')) {
+      const text = await res.text();
+      console.error('Expected JSON but got HTML. URL:', res.url);
+      console.error('First 200 chars:', text.slice(0, 200));
+      alert('Selected file is not a JSON export (HTML page returned).');
+      return;
+    }
+
     const json = await res.json();
     buildPage(json);
   } catch (err) {
