@@ -433,7 +433,7 @@
 <header>
   <div class="header-top">
     <div class="logo-wrap">
-      <img src="ttrl-logo.png" alt="SRC logo" class="logo-img">
+      <img src="src-logo.png" alt="SRC logo" class="logo-img">
       <div class="header-left-text">
         <h1 id="leagueTitle">SRC Multi-Season Statistics</h1>
         <p id="raceDayLine">Choose race day to view:</p>
@@ -788,7 +788,7 @@ function buildPage(data) {
 
   formatLoadedMeta(meta);
 
-  const leagueName = (meta.leagueName || '').trim() || 'SRC';
+  const leagueName = 'SRC';
   const msName = info.name || 'All Seasons';
   document.getElementById('leagueTitle').textContent =
     leagueName + ' – ' + msName;
