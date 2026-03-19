@@ -701,42 +701,53 @@ function getDriverAvatarSrc(driverName) {
 async function populateFileSelect() {
   const select = document.getElementById('fileSelect');
   if (!select) return;
-
-  // keep the first "Select race day…" option
   while (select.options.length > 1) select.remove(1);
 
   try {
-    const apiUrl =
-      'https://api.github.com/repos/SRCf1racing/SRC-season-data/contents/export_data';
+    const apiUrl = 'https://api.github.com/repos/srcf1racing/SRC-Season-Data/contents/export_data';  // Fixed case
 
-    const res = await fetch(apiUrl);
+    const res = await fetch(apiUrl, { headers: { 'User-Agent': 'SRC-Stats-Viewer' } });
     if (!res.ok) throw new Error('GitHub API error: ' + res.status);
 
-    const items = await res.json();   // array from GitHub
+    const items = await res.json();
+    const jsonFiles = items.filter(item => item.type === 'file' && item.name.toLowerCase().endsWith('.json'));
 
-    const jsonFiles = items.filter(
-      item =>
-        item.type === 'file' &&
-        item.name.toLowerCase().endsWith('.json')
-    );
-
-jsonFiles.forEach(file => {
-  const opt = document.createElement('option');
-  opt.value = file.path;      // keep full path for loading
-
-  // strip .json from the visible text
-  const baseName = file.name.endsWith('.json')
-    ? file.name.slice(0, -5)
-    : file.name;
-  opt.textContent = baseName;
-
-  select.appendChild(opt);
-});
-
+    jsonFiles.forEach(file => {
+      const opt = document.createElement('option');
+      opt.value = file.download_url || `https://api.github.com/repos/srcf1racing/SRC-Season-Data/contents/${file.path}?ref=main`;  // Prefer download_url
+      const baseName = file.name.endsWith('.json') ? file.name.slice(0, -5) : file.name;
+      opt.textContent = baseName;
+      select.appendChild(opt);
+    });
   } catch (err) {
-    console.error('populateFileSelect error', err);
+    console.error('populateFileSelect error:', err);
   }
 }
+
+// File loading with User-Agent
+document.getElementById('fileSelect').addEventListener('change', async e => {
+  const path = e.target.value;
+  if (!path) return;
+  window.currentExportFilename = path.split('/').pop();
+  try {
+    const res = await fetch(path, { headers: { 'User-Agent': 'SRC-Stats-Viewer' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('text/html')) {
+      const text = await res.text();
+      console.error('Expected JSON but got HTML. URL:', res.url);
+      console.error('First 200 chars:', text.slice(0, 200));
+      alert('Selected file is not a JSON export (HTML page returned).');
+      return;
+    }
+    const json = await res.json();
+    buildPage(json);
+  } catch (err) {
+    console.error(err);
+    alert('Failed to load JSON: ' + err.message);
+  }
+});
+
 
 // ---- EXISTING META + PAGE BUILD ----
 function formatLoadedMeta(meta) {
