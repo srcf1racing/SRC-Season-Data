@@ -706,7 +706,7 @@ async function populateFileSelect() {
   try {
     const apiUrl = 'https://api.github.com/repos/srcf1racing/SRC-Season-Data/contents/export_data';  // Fixed case
 
-    const res = await fetch(apiUrl, { headers: { 'User-Agent': 'SRC-Stats-Viewer' } });
+    const res = await fetch(apiUrl);
     if (!res.ok) throw new Error('GitHub API error: ' + res.status);
 
     const items = await res.json();
@@ -714,7 +714,7 @@ async function populateFileSelect() {
 
     jsonFiles.forEach(file => {
       const opt = document.createElement('option');
-      opt.value = file.download_url || `https://api.github.com/repos/srcf1racing/SRC-Season-Data/contents/${file.path}?ref=main`;  // Prefer download_url
+      opt.value = file.path;  // Prefer download_url
       const baseName = file.name.endsWith('.json') ? file.name.slice(0, -5) : file.name;
       opt.textContent = baseName;
       select.appendChild(opt);
@@ -730,7 +730,7 @@ document.getElementById('fileSelect').addEventListener('change', async e => {
   if (!path) return;
   window.currentExportFilename = path.split('/').pop();
   try {
-    const res = await fetch(path, { headers: { 'User-Agent': 'SRC-Stats-Viewer' } });
+    const res = await fetch(path);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const ct = res.headers.get('content-type') || '';
     if (ct.includes('text/html')) {
